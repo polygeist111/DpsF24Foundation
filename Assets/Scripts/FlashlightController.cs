@@ -42,11 +42,11 @@ public class FlashlightController : MonoBehaviour
 
     private void Update()
     {
-        potVal = GameObject.Find("DataIO").GetComponent<DataIO>().potentiometerValue;
+        potVal = GameObject.Find("Data").GetComponent<DataIO>().potentiometerValue;
         flashlight.intensity = potVal * .01f;
 
         //float distanceBetweenObjects = GameObject.Find("Sphere").GetComponent<DistanceFromObject01>().dist;
-        int switchVal26 = GameObject.Find("DataIO").GetComponent<DataIO>().flashlightButtonState;
+        int switchVal26 = GameObject.Find("Data").GetComponent<DataIO>().flashlightButtonState;
         if(switchVal26 == 0 && hasSwitched == false)
         //if (Input.GetKeyDown(KeyCode.F))
 
