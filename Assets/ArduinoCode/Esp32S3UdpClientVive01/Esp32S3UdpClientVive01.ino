@@ -23,6 +23,11 @@ const int buttonPin = 13;    // Example: Change this based on Feather ESP32-S3 p
 const int potPin = A0;       // Adjust if A0 is mapped differently on the ESP32-S3
 const int ledPin = 5;
 int ledBrightness;
+int buttonState;
+int potValue;
+
+float posX, posY, posZ; // position data from tracked Unity object
+
 
 void setup() {
     Serial.begin(115200);
@@ -48,15 +53,12 @@ void setup() {
 }
 
 void loop() {
-    int buttonState = digitalRead(buttonPin);
-    int potValue = analogRead(potPin);
+  readSensorInput();
+  sendDataToUnity();
+  readDataFromUnity();
+  setActuatorOutputs();
 
-    char packetBuffer[50];
-    sprintf(packetBuffer, "Button: %d, Pot: %d", buttonState, potValue);
-
-    udp.beginPacket(udpAddress, udpPort);
-    udp.write((uint8_t*)packetBuffer, strlen(packetBuffer));
-    udp.endPacket();
+    
 
     delay(40); // Send data every 40ms
 
@@ -71,7 +73,6 @@ void loop() {
         Serial.println(packetBuffer); // Display received position data
 
         // Parse position data
-        float posX, posY, posZ;
         sscanf(packetBuffer, "X:%f,Y:%f,Z:%f", &posX, &posY, &posZ);
 
         // Example of using the position values
@@ -82,11 +83,32 @@ void loop() {
         Serial.print(" Z: ");
         Serial.println(posZ);
 
-        // You can use posX, posY, and posZ to control servos, motors, etc.
-        ledBrightness = abs((int)posY %255);
-        analogWrite(ledPin, ledBrightness);
+        
     }
 }
+
+void readSensorInput(){
+  buttonState = digitalRead(buttonPin);
+  potValue = analogRead(potPin);
+}
+
+void sendDataToUnity(){
+  char packetBuffer[50];
+  sprintf(packetBuffer, "Button: %d, Pot: %d", buttonState, potValue);
+  udp.beginPacket(udpAddress, udpPort);
+  udp.write((uint8_t*)packetBuffer, strlen(packetBuffer));
+  udp.endPacket();
+}
+
+void readDataFromUnity() {
+  
+}
+
+void setActuatorOutputs(){
+  ledBrightness = abs((int)posY %255);
+  analogWrite(ledPin, ledBrightness);
+}
+
 
 void printWifiData() {
     // Print the Wi-Fi IP address
