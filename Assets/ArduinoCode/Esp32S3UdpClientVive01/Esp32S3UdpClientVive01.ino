@@ -23,12 +23,14 @@ const int udpPort = 4211;
 const int buttonPin = 13;  // Example: Change this based on Feather ESP32-S3 pinout
 const int potPin = A0;     // Adjust if A0 is mapped differently on the ESP32-S3
 const int ledPin = 5;
+
+// sensor/data variables
 int ledBrightness;
 int buttonState;
 int potValue;
-
 float posX, posY, posZ;  // position data from tracked Unity object
 
+// timers
 elapsedMillis sensorReadTimer;
 elapsedMillis sendToUnityTimer;
 elapsedMillis readFromUnityTimer;
@@ -71,8 +73,6 @@ void loop() {
   readDataFromUnity();
   setActuatorOutputs();
   printIncomingData();
-
-  delay(40);  // Send data every 40ms
 }
 
 
@@ -85,41 +85,52 @@ void readSensorInput() {
 }
 
 void sendDataToUnity() {
-  char packetBuffer[50];
-  sprintf(packetBuffer, "Button: %d, Pot: %d", buttonState, potValue);
-  udp.beginPacket(udpAddress, udpPort);
-  udp.write((uint8_t*)packetBuffer, strlen(packetBuffer));
-  udp.endPacket();
+  if (sendToUnityTimer >= sendToUnityInterval) {
+    sendToUnityTimer = 0;
+    char packetBuffer[50];
+    sprintf(packetBuffer, "Button: %d, Pot: %d", buttonState, potValue);
+    udp.beginPacket(udpAddress, udpPort);
+    udp.write((uint8_t*)packetBuffer, strlen(packetBuffer));
+    udp.endPacket();
+  }
 }
 
 void readDataFromUnity() {
-  int packetSize = udp.parsePacket();
-  if (packetSize) {
-    char packetBuffer[255];
-    int len = udp.read(packetBuffer, 255);
-    if (len > 0) {
-      packetBuffer[len] = 0;
+  if (readFromUnityTimer >= readFromUnityInterval) {
+    int packetSize = udp.parsePacket();
+    if (packetSize) {
+      char packetBuffer[255];
+      int len = udp.read(packetBuffer, 255);
+      if (len > 0) {
+        packetBuffer[len] = 0;
+      }
+
+      //Serial.println(packetBuffer); // Uncomment to display received position data
+
+      // Parse position data
+      sscanf(packetBuffer, "X:%f,Y:%f,Z:%f", &posX, &posY, &posZ);
     }
-
-    //Serial.println(packetBuffer); // Uncomment to display received position data
-
-    // Parse position data
-    sscanf(packetBuffer, "X:%f,Y:%f,Z:%f", &posX, &posY, &posZ);
   }
 }
 
 void setActuatorOutputs() {
-  ledBrightness = abs((int)posY % 255);
-  analogWrite(ledPin, ledBrightness);
+  if (setActuatorsTimer >= setActuatorsInterval) {
+    setActuatorsTimer = 0;
+    ledBrightness = abs((int)posY % 255);
+    analogWrite(ledPin, ledBrightness);
+  }
 }
 
 void printIncomingData() {
-  Serial.print("Position - X: ");
-  Serial.print(posX);
-  Serial.print(" Y: ");
-  Serial.print(posY);
-  Serial.print(" Z: ");
-  Serial.println(posZ);
+  if (printTimer >= printInterval) {
+    printTimer = 0;
+    Serial.print("Position - X: ");
+    Serial.print(posX);
+    Serial.print(" Y: ");
+    Serial.print(posY);
+    Serial.print(" Z: ");
+    Serial.println(posZ);
+  }
 }
 
 
