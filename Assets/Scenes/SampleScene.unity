@@ -417,7 +417,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.24
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.802082
@@ -715,7 +715,7 @@ Light:
   m_Color: {r: 0.8207547, g: 0.14324492, b: 0.14324492, a: 1}
   m_Intensity: 5
   m_Range: 83.2
-  m_SpotAngle: 30
+  m_SpotAngle: 40.6
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
@@ -775,8 +775,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5faf655f8724e4b89bea3cfd41410bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnOnSound: {fileID: 0}
-  turnOffSound: {fileID: 0}
+  turnOnSound: {fileID: 8300000, guid: 731b943f67805403a86636aceab09603, type: 3}
+  turnOffSound: {fileID: 8300000, guid: 289e8035ed7a64a06823598c5ed7ee23, type: 3}
   potVal: 0
 --- !u!1 &1460964453
 GameObject:
