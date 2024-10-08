@@ -21,11 +21,15 @@ const int udpPort = 4211;
 // Adjust these pin numbers according to the Feather ESP32-S3 pinout
 const int buttonPin = 13;    // Example: Change this based on Feather ESP32-S3 pinout
 const int potPin = A0;       // Adjust if A0 is mapped differently on the ESP32-S3
+const int ledPin = 5;
+int ledBrightness;
 
 void setup() {
     Serial.begin(115200);
     pinMode(buttonPin, INPUT_PULLUP);
     pinMode(potPin, INPUT);
+    pinMode(ledPin, OUTPUT);
+
 
     // Attempt to connect to Wi-Fi network
     Serial.print("Connecting to Wi-Fi: ");
@@ -55,6 +59,33 @@ void loop() {
     udp.endPacket();
 
     delay(40); // Send data every 40ms
+
+    int packetSize = udp.parsePacket();
+    if (packetSize) {
+        char packetBuffer[255];
+        int len = udp.read(packetBuffer, 255);
+        if (len > 0) {
+            packetBuffer[len] = 0;
+        }
+
+        Serial.println(packetBuffer); // Display received position data
+
+        // Parse position data
+        float posX, posY, posZ;
+        sscanf(packetBuffer, "X:%f,Y:%f,Z:%f", &posX, &posY, &posZ);
+
+        // Example of using the position values
+        Serial.print("Position - X: ");
+        Serial.print(posX);
+        Serial.print(" Y: ");
+        Serial.print(posY);
+        Serial.print(" Z: ");
+        Serial.println(posZ);
+
+        // You can use posX, posY, and posZ to control servos, motors, etc.
+        ledBrightness = abs((int)posY %255);
+        analogWrite(ledPin, ledBrightness);
+    }
 }
 
 void printWifiData() {
