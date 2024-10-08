@@ -6,17 +6,17 @@
 #include <WiFiUdp.h>
 #include <elapsedMillis.h>
 
-char ssid[] = "NETGEAR92";           // Set your Wi-Fi SSID
-char password[] = "greatflower105";  // Set your Wi-Fi password
-int status = WL_IDLE_STATUS;         // Indicator of Wi-Fi status
+// char ssid[] = "NETGEAR92";           // Set your Wi-Fi SSID
+// char password[] = "greatflower105";  // Set your Wi-Fi password
+// int status = WL_IDLE_STATUS;         // Indicator of Wi-Fi status
 
-// char ssid[] = "meshmeshmesh";    // Set your Wi-Fi SSID
-// char password[] = "sparkyasu";    // Set your Wi-Fi password
-// int status = WL_IDLE_STATUS;        // Indicator of Wi-Fi status
+char ssid[] = "meshmeshmesh";    // Set your Wi-Fi SSID
+char password[] = "sparkyasu";    // Set your Wi-Fi password
+int status = WL_IDLE_STATUS;        // Indicator of Wi-Fi status
 
 WiFiUDP udp;
-const char* udpAddress = "192.168.0.8";  // IP address of the computer running Unity
-// const char* udpAddress = "192.168.1.76";  // IP address of the computer running Unity
+// const char* udpAddress = "192.168.0.8";  // IP address of the computer running Unity
+const char* udpAddress = "192.168.1.76";  // IP address of the computer running Unity
 const int udpPort = 4211;
 
 // Adjust these pin numbers according to the Feather ESP32-S3 pinout
